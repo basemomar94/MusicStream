@@ -1,25 +1,21 @@
 package com.bassem.musicstream.ui.home
 
-import android.database.Cursor
-import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bassem.musicstream.R
 import com.bassem.musicstream.adapters.HomeAdapter
 import com.bassem.musicstream.databinding.AllsongsFragmentBinding
-import com.bassem.musicstream.entities.Song
-import com.bassem.musicstream.ui.playsong.SongFragment
+import com.bassem.musicstream.entities.Book
 
-class HomeFragment : Fragment(R.layout.allsongs_fragment) {
+class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInterface {
     private var _binidng: AllsongsFragmentBinding? = null
     private var booksRv: RecyclerView? = null
     private var booksAdapter: HomeAdapter? = null
@@ -60,9 +56,9 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment) {
 
     }
 
-    private fun RvSetup(list: MutableList<Song>) {
+    private fun RvSetup(list: MutableList<Book>) {
         booksRv = _binidng?.recyclerViewHome
-        booksAdapter = HomeAdapter(list, requireContext())
+        booksAdapter = HomeAdapter(list, requireContext(), this)
         booksRv?.apply {
             adapter = booksAdapter
             layoutManager = GridLayoutManager(requireContext(), 2)
@@ -75,6 +71,15 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment) {
             progressLayout.visibility = View.GONE
             recyclerViewHome.visibility = View.VISIBLE
         }
+    }
+
+    override fun viewBook(book: Book) {
+        val bundle = Bundle()
+        bundle.putSerializable("book", book)
+        val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+        navController.navigate(R.id.action_homeFragment_to_songFragment, bundle)
+
+
     }
 
 
