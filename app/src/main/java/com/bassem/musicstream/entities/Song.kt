@@ -4,6 +4,7 @@ import android.net.Uri
 
 data class Song(
     var name: String = "",
-    var singer: String = "",
-    var path : String?=null
+    var audioLink: String = "",
+    var coverLink: String = "",
+    var description: String = ""
 )

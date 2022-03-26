@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.SignupFragmentBinding
 import com.bassem.musicstream.entities.User
@@ -38,6 +39,7 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
             viewModel?.auth(binding?.mail?.text.toString(), binding?.password?.text.toString())
         }
 
+
         //Observers
         viewModel?.userId?.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -46,7 +48,8 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
         }
 
         viewModel?.succed?.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "succeded", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "succeeded", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_signupFragment_to_homeFragment)
         }
     }
 
