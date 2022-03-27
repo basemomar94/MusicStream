@@ -8,24 +8,60 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
     var db: FirebaseFirestore? = null
-    var allsong = MutableLiveData<MutableList<Book>>()
+    var booksList = MutableLiveData<MutableList<Book>>()
+    var novelsList = MutableLiveData<MutableList<Book>>()
+    var childrenList = MutableLiveData<MutableList<Book>>()
 
 
-    fun getAllSongs() {
+    fun getBooks() {
         val firestoreList: MutableList<Book> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("books")?.get()?.addOnCompleteListener {
+        db?.collection("books")?.whereEqualTo("category", "book")?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 for (dc in it.result) {
                     val song = dc.toObject(Book::class.java)
                     firestoreList.add(song)
-                    println("${song.name}   SOONG")
                 }
 
-                allsong.postValue(firestoreList)
+                booksList.postValue(firestoreList)
 
             }
 
         }
+    }
+
+    fun getNovels() {
+        val firestoreList: MutableList<Book> = arrayListOf()
+        db = FirebaseFirestore.getInstance()
+        db?.collection("books")?.whereEqualTo("category", "novel")?.get()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                for (dc in it.result) {
+                    val song = dc.toObject(Book::class.java)
+                    firestoreList.add(song)
+                }
+
+                novelsList.postValue(firestoreList)
+
+            }
+
+        }
+    }
+
+    fun getChildren() {
+        val firestoreList: MutableList<Book> = arrayListOf()
+        db = FirebaseFirestore.getInstance()
+        db?.collection("books")?.whereEqualTo("category", "children")?.get()
+            ?.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    for (dc in it.result) {
+                        val song = dc.toObject(Book::class.java)
+                        firestoreList.add(song)
+                    }
+
+                    childrenList.postValue(firestoreList)
+
+                }
+
+            }
     }
 }

@@ -8,7 +8,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bassem.musicstream.R
 import com.bassem.musicstream.adapters.HomeAdapter
@@ -18,7 +18,11 @@ import com.bassem.musicstream.entities.Book
 class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInterface {
     private var _binidng: AllsongsFragmentBinding? = null
     private var booksRv: RecyclerView? = null
+    private var novelsRv: RecyclerView? = null
+
     private var booksAdapter: HomeAdapter? = null
+    private var novelsAdapter: HomeAdapter? = null
+
     private var viewModel: HomeViewModel? = null
     var bottomLayout: LinearLayout? = null
 
@@ -42,26 +46,40 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
         bottomLayout?.visibility = View.VISIBLE
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
-        viewModel?.getAllSongs()
+
+        viewModel?.getBooks()
+        viewModel?.getNovels()
 
         //Observers
-        viewModel?.allsong?.observe(viewLifecycleOwner) {
+        viewModel?.booksList?.observe(viewLifecycleOwner) {
             if (it != null) {
-                RvSetup(it)
+                initRv(_binidng?.recyclerViewBooks!!, HomeAdapter(it, requireContext(), this))
                 endLoading()
             }
 
         }
 
+        viewModel?.novelsList?.observe(viewLifecycleOwner) {
+            if (it != null) {
+                initRv(_binidng?.recyclerViewNovels!!, HomeAdapter(it, requireContext(), this))
+            }
+        }
+
+        viewModel?.childrenList?.observe(viewLifecycleOwner) {
+            if (it != null) {
+                initRv(_binidng?.recyclerViewChildren!!, HomeAdapter(it, requireContext(), this))
+
+            }
+        }
+
 
     }
 
-    private fun RvSetup(list: MutableList<Book>) {
-        booksRv = _binidng?.recyclerViewHome
-        booksAdapter = HomeAdapter(list, requireContext(), this)
-        booksRv?.apply {
-            adapter = booksAdapter
-            layoutManager = GridLayoutManager(requireContext(), 2)
+    private fun initRv(rv: RecyclerView, rvAdapter: HomeAdapter) {
+        rv.apply {
+            adapter = rvAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
         }
     }
@@ -69,7 +87,7 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
     private fun endLoading() {
         _binidng?.apply {
             progressLayout.visibility = View.GONE
-            recyclerViewHome.visibility = View.VISIBLE
+            recyclerViewBooks.visibility = View.VISIBLE
         }
     }
 
@@ -78,8 +96,6 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
         bundle.putSerializable("book", book)
         val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
         navController.navigate(R.id.action_homeFragment_to_songFragment, bundle)
-
-
     }
 
 
