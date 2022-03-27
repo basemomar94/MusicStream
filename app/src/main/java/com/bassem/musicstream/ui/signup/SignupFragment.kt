@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.SignupFragmentBinding
 import com.bassem.musicstream.entities.User
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class SignupFragment : Fragment(R.layout.signup_fragment) {
     private var _binding: SignupFragmentBinding? = null
@@ -36,7 +38,10 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
 
         //listener
         binding?.signupButton?.setOnClickListener {
-            viewModel?.auth(binding?.mail?.text.toString(), binding?.password?.text.toString())
+            checkEmpty()
+            if (isFieldsFull() && isPasswordMatched()) {
+                viewModel?.auth(binding?.mail?.text.toString(), binding?.password?.text.toString())
+            }
         }
 
 
@@ -64,6 +69,39 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
 
         }
 
+    }
+
+    private fun showErrorMsg(input: TextInputEditText, layout: TextInputLayout) {
+        if (input.text.isNullOrEmpty()) {
+            layout.error = "* required"
+        } else {
+            layout.isErrorEnabled = false
+        }
+    }
+
+    private fun checkEmpty() {
+        showErrorMsg(binding!!.fullname, binding!!.nameLayout)
+        showErrorMsg(binding!!.mail, binding!!.mailLayout)
+        showErrorMsg(binding!!.password, binding!!.passwordLayout)
+        showErrorMsg(binding!!.passwordcheck, binding!!.passwordcheckLayout)
+        showErrorMsg(binding!!.phone, binding!!.phoneLayout)
+
+    }
+
+    private fun isFieldsFull() =
+        binding?.fullname?.text?.isNotEmpty()!! && binding?.mail?.text?.isNotEmpty()!! && binding?.password?.text?.isNotEmpty()!! && binding?.passwordcheck?.text?.isNotEmpty()!!
+                && binding?.phone?.text?.isNotEmpty()!!
+
+    private fun isPasswordMatched(): Boolean {
+        var isMatched = false
+        if (binding?.password?.text.toString() == binding?.passwordcheck?.text.toString()) {
+            isMatched = true
+        } else {
+            isMatched = false
+            binding?.passwordLayout?.error = "the password should be identical"
+            binding?.passwordcheckLayout?.error = "the password should be identical"
+        }
+        return isMatched
     }
 
 
