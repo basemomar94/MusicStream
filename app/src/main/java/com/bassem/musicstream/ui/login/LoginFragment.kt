@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.LoginFragmentBinding
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginFragment : Fragment(R.layout.login_fragment) {
@@ -54,10 +56,17 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         }
 
         binding?.loginBtu?.setOnClickListener {
-            viewModel?.login(
-                binding?.mailSignin?.text.toString(),
-                binding?.passSigin?.text.toString()
-            )
+            loading(true)
+            checkEmpty()
+            if (isFieldsFull()) {
+                viewModel?.login(
+                    binding?.mailSignin?.text.toString(),
+                    binding?.passSigin?.text.toString()
+                )
+            } else {
+                loading(false)
+            }
+
 
         }
 
@@ -65,9 +74,40 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         viewModel?.isLogin?.observe(viewLifecycleOwner) {
             if (it) {
                 findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            } else {
+                loading(false)
             }
         }
 
 
     }
+
+    fun isFieldsFull() =
+        binding?.mailSignin?.text?.isNotEmpty()!! && binding?.passSigin?.text?.isNotEmpty()!!
+
+    private fun showErrorMsg(input: TextInputEditText, layout: TextInputLayout) {
+        if (input.text.isNullOrEmpty()) {
+            layout.error = "* required"
+        } else {
+            layout.isErrorEnabled = false
+        }
+    }
+
+    private fun checkEmpty() {
+        showErrorMsg(binding?.mailSignin!!, binding?.mailSignLayout!!)
+        showErrorMsg(binding?.passSigin!!, binding?.passSignLayout!!)
+
+    }
+
+    private fun loading(isLoading: Boolean) {
+        if (isLoading) {
+            binding?.loginBtu?.visibility = View.GONE
+            binding?.progressBar2?.visibility = View.VISIBLE
+        } else {
+            binding?.loginBtu?.visibility = View.VISIBLE
+            binding?.progressBar2?.visibility = View.GONE
+        }
+    }
+
+
 }

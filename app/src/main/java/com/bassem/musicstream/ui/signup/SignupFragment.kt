@@ -38,10 +38,16 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
 
         //listener
         binding?.signupButton?.setOnClickListener {
+            loading(true)
             checkEmpty()
             if (isFieldsFull() && isPasswordMatched()) {
                 viewModel?.auth(binding?.mail?.text.toString(), binding?.password?.text.toString())
+            } else {
+                loading(false)
             }
+        }
+        binding?.login?.setOnClickListener {
+            findNavController().navigate(R.id.action_signupFragment_to_loginFragment)
         }
 
 
@@ -52,9 +58,12 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
             }
         }
 
-        viewModel?.succed?.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "succeeded", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.action_signupFragment_to_homeFragment)
+        viewModel?.isSucceed?.observe(viewLifecycleOwner) {
+            if (it) {
+                findNavController().navigate(R.id.action_signupFragment_to_homeFragment)
+            } else {
+                loading(false)
+            }
         }
     }
 
@@ -102,6 +111,16 @@ class SignupFragment : Fragment(R.layout.signup_fragment) {
             binding?.passwordcheckLayout?.error = "the password should be identical"
         }
         return isMatched
+    }
+
+    private fun loading(isLoading: Boolean) {
+        if (isLoading) {
+            binding?.signupButton?.visibility = View.GONE
+            binding?.progressBar?.visibility = View.VISIBLE
+        } else {
+            binding?.signupButton?.visibility = View.VISIBLE
+            binding?.progressBar?.visibility = View.GONE
+        }
     }
 
 

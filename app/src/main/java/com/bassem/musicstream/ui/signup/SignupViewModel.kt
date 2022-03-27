@@ -13,7 +13,7 @@ class SignupViewModel(app: Application) : AndroidViewModel(app) {
     var auth: FirebaseAuth? = null
     var db: FirebaseFirestore? = null
     var userId = MutableLiveData<String>()
-    var succed = MutableLiveData<Boolean>()
+    var isSucceed = MutableLiveData<Boolean>()
 
 
     fun auth(mail: String, password: String) {
@@ -24,6 +24,7 @@ class SignupViewModel(app: Application) : AndroidViewModel(app) {
 
             } else {
                 Toast.makeText(context, "${it.exception?.message}", Toast.LENGTH_SHORT).show()
+                isSucceed.postValue(false)
             }
 
         }
@@ -33,9 +34,11 @@ class SignupViewModel(app: Application) : AndroidViewModel(app) {
         db = FirebaseFirestore.getInstance()
         db?.collection("users")?.document(userid)?.set(user)?.addOnCompleteListener {
             if (it.isSuccessful) {
-                succed.postValue(it.isSuccessful)
+                isSucceed.postValue(it.isSuccessful)
             } else {
                 Toast.makeText(context, "${it.exception?.message}", Toast.LENGTH_SHORT).show()
+                isSucceed.postValue(false)
+
 
             }
         }

@@ -20,6 +20,7 @@ class LoginViewModel(app: Application) : AndroidViewModel(app) {
             }
         }?.addOnFailureListener {
             Toast.makeText(appcontext, "${it.message}", Toast.LENGTH_SHORT).show()
+            isLogin.postValue(false)
         }
     }
 }
