@@ -1,6 +1,7 @@
 package com.bassem.musicstream.ui.home
 
 import android.os.Bundle
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
 
         viewModel?.getBooks()
         viewModel?.getNovels()
+        viewModel?.getChildren()
 
         //Observers
         viewModel?.booksList?.observe(viewLifecycleOwner) {
@@ -87,7 +89,7 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
     private fun endLoading() {
         _binidng?.apply {
             progressLayout.visibility = View.GONE
-            recyclerViewBooks.visibility = View.VISIBLE
+            homeLayout.visibility = View.VISIBLE
         }
     }
 

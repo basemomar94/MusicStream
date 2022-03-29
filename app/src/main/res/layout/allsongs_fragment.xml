@@ -11,8 +11,7 @@
         android:id="@+id/progressLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        tools:visibility="gone">
+        android:visibility="visible">
 
         <ProgressBar
             android:id="@+id/progressBar3"
@@ -24,6 +23,7 @@
     </FrameLayout>
 
     <ScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -31,22 +31,30 @@
             android:id="@+id/homeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Books"
-                    android:textColor="@color/orange"
-                    android:textSize="16sp"
-                    android:typeface="normal" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Books"
+                        android:textColor="@color/orange"
+                        android:textSize="16sp"
+                        android:typeface="normal" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -62,8 +70,7 @@
                     android:id="@+id/recyclerViewBooks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:visibility="visible">
 
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
@@ -97,8 +104,7 @@
                     android:id="@+id/recyclerViewNovels"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    tools:visibility="visible">
+                    android:visibility="visible">
 
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
@@ -132,8 +138,7 @@
                     android:id="@+id/recyclerViewChildren"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:visibility="visible">
 
                 </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>

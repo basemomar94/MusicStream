@@ -9,11 +9,18 @@ import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.PlayFragmentBinding
 import com.bassem.musicstream.entities.Book
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
 
 class PlayFragment : Fragment(R.layout.play_fragment) {
     var _binding: PlayFragmentBinding? = null
     val binding get() = _binding
     private var book: Book? = null
+    private var isPlaying = false
+
+
+    private var exoPlayer: ExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +39,29 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        book?.let { updateUi(it) }
+        book?.let {
+            updateUi(it)
+            initPlayer()
+        }
+
+        //Listeners
+        binding?.apply {
+            playSong.setOnClickListener {
+                exoPlayer?.play()
+                playOrpause(true)
+
+            }
+            pauseSong.setOnClickListener {
+                exoPlayer?.pause()
+                playOrpause(false)
+            }
+
+
+
+        }
+
+
+
     }
 
 
@@ -45,4 +74,28 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
         Glide.with(requireContext()).load(image).into(cover!!)
 
     }
+
+    private fun initPlayer() {
+        exoPlayer = ExoPlayer.Builder(requireContext()).build()
+        val media: MediaItem = MediaItem.fromUri(book!!.audioLink)
+        exoPlayer?.addMediaItem(media)
+        exoPlayer?.prepare()
+    }
+
+    private fun playOrpause(play: Boolean) {
+        if (play) {
+            binding?.apply {
+                playSong.visibility = View.GONE
+                pauseSong.visibility = View.VISIBLE
+            }
+        } else {
+            binding?.apply {
+                playSong.visibility = View.VISIBLE
+                pauseSong.visibility = View.GONE
+            }
+        }
+
+    }
+
+
 }

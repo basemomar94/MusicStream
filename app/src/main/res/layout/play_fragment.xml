@@ -48,13 +48,13 @@
             android:layout_marginRight="8dp">
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/currentBuffer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:30" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/totalBuffer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
@@ -83,11 +83,20 @@
                 app:srcCompat="@drawable/backward" />
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/playSong"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="16dp"
                 app:srcCompat="@drawable/play" />
+
+            <ImageView
+                android:id="@+id/pauseSong"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_margin="16dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                app:srcCompat="@drawable/pause" />
 
             <ImageView
                 android:id="@+id/imageView6"
