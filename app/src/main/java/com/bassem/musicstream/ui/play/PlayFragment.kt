@@ -1,10 +1,12 @@
 package com.bassem.musicstream.ui.play
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.PlayFragmentBinding
 import com.bassem.musicstream.entities.Book
@@ -43,19 +45,28 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
             updateUi(it)
             initPlayer()
         }
+        //Observers
+
+        var currentPlayBack = MutableLiveData<Long>()
+        currentPlayBack.observe(viewLifecycleOwner) {
+            println(it.toString())
+
+        }
 
         //Listeners
         binding?.apply {
             playSong.setOnClickListener {
                 exoPlayer?.play()
                 playOrpause(true)
+                //  updatePlayback()
+                currentPlayBack.postValue(exoPlayer?.bufferedPosition)
+
 
             }
             pauseSong.setOnClickListener {
                 exoPlayer?.pause()
                 playOrpause(false)
             }
-
 
 
         }
@@ -95,6 +106,19 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
             }
         }
 
+    }
+
+    private fun updatePlayback() {
+        val handler = Handler()
+        while (exoPlayer!!.isPlaying) {
+            handler.postDelayed(Runnable {
+                val playbackpostition = exoPlayer?.currentPosition
+                binding?.currentBuffer?.text = playbackpostition.toString()
+                handler.postDelayed(Runnable {
+
+                }, 1000)
+            }, 1000)
+        }
     }
 
 
