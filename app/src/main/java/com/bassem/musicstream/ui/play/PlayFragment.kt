@@ -9,17 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.PlayFragmentBinding
-import com.bassem.musicstream.entities.Book
+import com.bassem.musicstream.entities.Song
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
 
 class PlayFragment : Fragment(R.layout.play_fragment) {
     var _binding: PlayFragmentBinding? = null
     val binding get() = _binding
-    private var book: Book? = null
+    private var song: Song? = null
+    private var allSongs: ArrayList<Song>? = null
     private var isPlaying = false
+    private var current = 0
 
 
     private var exoPlayer: ExoPlayer? = null
@@ -27,7 +28,10 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = this.arguments
-        book = args?.get("book") as Book
+        song = args?.get("book") as Song
+        allSongs = args.get("list") as ArrayList<Song>
+        current = args.getInt("current")
+        println("$current ////")
     }
 
     override fun onCreateView(
@@ -41,9 +45,9 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        book?.let {
+        allSongs?.get(current)?.let {
             updateUi(it)
-            initPlayer()
+            initPlayer(it)
         }
         //Observers
 
@@ -57,7 +61,7 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
         binding?.apply {
             playSong.setOnClickListener {
                 exoPlayer?.play()
-                playOrpause(true)
+                playOrpause(exoPlayer!!.isPlaying)
                 //  updatePlayback()
                 currentPlayBack.postValue(exoPlayer?.bufferedPosition)
 
@@ -65,35 +69,69 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
             }
             pauseSong.setOnClickListener {
                 exoPlayer?.pause()
-                playOrpause(false)
+                playOrpause(exoPlayer!!.isPlaying)
+            }
+
+            nextSong.setOnClickListener {
+                exoPlayer?.stop()
+                if (current < allSongs!!.size - 1) {
+                    current++
+                    val song = allSongs?.get(current)
+                    updateUi(song!!)
+                    initPlayer(song)
+
+                } else {
+                    current = 0
+                    val song = allSongs?.get(current)
+                    updateUi(song!!)
+                    initPlayer(song)
+                }
+
+            }
+
+            previousSong.setOnClickListener {
+                exoPlayer?.stop()
+                if (current < allSongs!!.size - 1) {
+                    current--
+                    val song = allSongs?.get(current)
+                    updateUi(song!!)
+                    initPlayer(song)
+
+                } else {
+                    current = 0
+                    val song = allSongs?.get(current)
+                    updateUi(song!!)
+                    initPlayer(song)
+                }
             }
 
 
         }
 
 
-
     }
 
 
-    private fun updateUi(book: Book) {
+    private fun updateUi(song: Song) {
         binding?.apply {
-            playTitle.text = book.name
+            playTitle.text = song.name
         }
         val cover = binding?.playImage
-        val image = book.coverLink
+        val image = song.coverLink
         Glide.with(requireContext()).load(image).into(cover!!)
 
     }
 
-    private fun initPlayer() {
+    private fun initPlayer(currentSong: Song) {
         exoPlayer = ExoPlayer.Builder(requireContext()).build()
-        val media: MediaItem = MediaItem.fromUri(book!!.audioLink)
+        val media: MediaItem = MediaItem.fromUri(currentSong.audioLink)
         exoPlayer?.addMediaItem(media)
         exoPlayer?.prepare()
+        exoPlayer?.play()
     }
 
     private fun playOrpause(play: Boolean) {
+
         if (play) {
             binding?.apply {
                 playSong.visibility = View.GONE

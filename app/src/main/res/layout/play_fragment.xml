@@ -76,7 +76,7 @@
             android:visibility="visible">
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/previousSong"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="16dp"
@@ -87,6 +87,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="16dp"
+                android:visibility="gone"
                 app:srcCompat="@drawable/play" />
 
             <ImageView
@@ -95,14 +96,15 @@
                 android:layout_height="70dp"
                 android:layout_margin="16dp"
                 android:layout_weight="1"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:srcCompat="@drawable/pause" />
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/nextSong"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_margin="16dp"
+                android:visibility="visible"
                 app:srcCompat="@drawable/forward" />
         </LinearLayout>
     </LinearLayout>

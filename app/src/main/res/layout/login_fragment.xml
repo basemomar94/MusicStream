@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/previousSong"
                 android:layout_width="match_parent"
                 android:layout_height="316dp"
                 app:srcCompat="@drawable/login" />

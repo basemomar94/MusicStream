@@ -1,7 +1,8 @@
 package com.bassem.musicstream.ui.home
 
 import android.os.Bundle
-import android.view.DragEvent
+import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bassem.musicstream.R
 import com.bassem.musicstream.adapters.HomeAdapter
 import com.bassem.musicstream.databinding.AllsongsFragmentBinding
-import com.bassem.musicstream.entities.Book
+import com.bassem.musicstream.entities.Song
+import java.util.ArrayList
 
 class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInterface {
     private var _binidng: AllsongsFragmentBinding? = null
@@ -93,9 +95,12 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
         }
     }
 
-    override fun viewBook(book: Book) {
+    override fun viewBook(song: Song, list: MutableList<Song>, position: Int) {
         val bundle = Bundle()
-        bundle.putSerializable("book", book)
+        Log.d("adapter", position.toString())
+        bundle.putSerializable("book", song)
+        bundle.putInt("current", position)
+        bundle.putParcelableArrayList("list", list as ArrayList<out Parcelable>)
         val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
         navController.navigate(R.id.action_homeFragment_to_songFragment, bundle)
     }

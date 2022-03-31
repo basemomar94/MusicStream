@@ -67,7 +67,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/previousSong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -81,7 +81,7 @@
                     app:srcCompat="@drawable/play" />
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/nextSong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

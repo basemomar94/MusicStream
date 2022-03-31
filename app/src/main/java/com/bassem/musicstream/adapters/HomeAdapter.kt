@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bassem.musicstream.R
-import com.bassem.musicstream.entities.Book
+import com.bassem.musicstream.entities.Song
 import com.bumptech.glide.Glide
 
 class HomeAdapter(
-    var allBooksList: MutableList<Book>,
+    var allBooksList: MutableList<Song>,
     val context: Context,
     val listner: HomeInterface
 ) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
@@ -21,7 +21,7 @@ class HomeAdapter(
         init {
             image.setOnClickListener {
                 val book = allBooksList[absoluteAdapterPosition]
-                listner.viewBook(book)
+                listner.viewBook(book, allBooksList, absoluteAdapterPosition)
             }
         }
 
@@ -45,11 +45,11 @@ class HomeAdapter(
         return allBooksList.size
     }
 
-    fun addList(list: MutableList<Book>) {
+    fun addList(list: MutableList<Song>) {
         allBooksList = list
     }
 
     interface HomeInterface {
-        fun viewBook(book: Book)
+        fun viewBook(song: Song, list: MutableList<Song>, position: Int)
     }
 }
