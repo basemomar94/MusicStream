@@ -50,10 +50,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
                         android:layout_marginTop="8dp"
-                        android:text="Books"
+                        android:text="Metal"
                         android:textColor="@color/orange"
                         android:textSize="16sp"
                         android:typeface="normal" />
+
                 </LinearLayout>
 
                 <TextView
@@ -61,8 +62,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginRight="8dp"
+                    android:background="@color/gray"
                     android:text="see all"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:typeface="normal" />
 
@@ -85,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="Novels"
+                    android:text="Romantic"
                     android:textColor="@color/orange"
                     android:textSize="16sp"
                     android:typeface="normal" />
@@ -95,8 +97,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginRight="8dp"
+                    android:background="@color/gray"
                     android:text="see all"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:typeface="normal" />
 
@@ -119,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="Children"
+                    android:text="Soft"
                     android:textColor="@color/orange"
                     android:textSize="16sp"
                     android:typeface="normal" />
@@ -129,8 +132,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:layout_marginRight="8dp"
+                    android:background="@color/gray"
                     android:text="see all"
-                    android:textColor="@color/orange"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     android:typeface="normal" />
 

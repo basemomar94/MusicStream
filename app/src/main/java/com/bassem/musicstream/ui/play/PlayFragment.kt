@@ -2,6 +2,7 @@ package com.bassem.musicstream.ui.play
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +14,16 @@ import com.bassem.musicstream.entities.Song
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 
-class PlayFragment : Fragment(R.layout.play_fragment) {
+class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     var _binding: PlayFragmentBinding? = null
     val binding get() = _binding
     private var song: Song? = null
     private var allSongs: ArrayList<Song>? = null
     private var isPlaying = false
     private var current = 0
+    private var issPlaying = MutableLiveData<Boolean>()
 
 
     private var exoPlayer: ExoPlayer? = null
@@ -56,20 +59,21 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
             println(it.toString())
 
         }
+        issPlaying.observe(viewLifecycleOwner) {
+            playOrpause(it)
+            println(it)
+        }
 
         //Listeners
         binding?.apply {
             playSong.setOnClickListener {
                 exoPlayer?.play()
-                playOrpause(exoPlayer!!.isPlaying)
-                //  updatePlayback()
                 currentPlayBack.postValue(exoPlayer?.bufferedPosition)
 
 
             }
             pauseSong.setOnClickListener {
                 exoPlayer?.pause()
-                playOrpause(exoPlayer!!.isPlaying)
             }
 
             nextSong.setOnClickListener {
@@ -80,12 +84,17 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
                     updateUi(song!!)
                     initPlayer(song)
 
+
                 } else {
                     current = 0
                     val song = allSongs?.get(current)
                     updateUi(song!!)
                     initPlayer(song)
                 }
+                playOrpause(true)
+
+                Log.d("Check", exoPlayer!!.isPlaying.toString())
+
 
             }
 
@@ -103,12 +112,27 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
                     updateUi(song!!)
                     initPlayer(song)
                 }
+                playOrpause(true)
+
+
             }
 
 
         }
+        exoPlayer?.addListener(this)
 
 
+    }
+
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        super.onIsPlayingChanged(isPlaying)
+        Log.d("IsPlaying", isPlaying.toString())
+        playOrpause(isPlaying)
+    }
+
+    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+        super.onPlayWhenReadyChanged(playWhenReady, reason)
+        Log.d("isPlaying", playWhenReady.toString())
     }
 
 
@@ -128,6 +152,7 @@ class PlayFragment : Fragment(R.layout.play_fragment) {
         exoPlayer?.addMediaItem(media)
         exoPlayer?.prepare()
         exoPlayer?.play()
+        issPlaying.postValue(exoPlayer?.isPlaying)
     }
 
     private fun playOrpause(play: Boolean) {
