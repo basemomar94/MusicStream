@@ -5,21 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bassem.musicstream.R
 import com.bassem.musicstream.entities.Song
 import com.bumptech.glide.Glide
 
-class HomeAdapter(
+class SongsListAdapter(
     var allSongsList: MutableList<Song>,
     val context: Context,
     val listner: HomeInterface
-) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SongsListAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val image = itemView.findViewById<ImageView>(R.id.bookImage)
+        val image = itemView.findViewById<ImageView>(R.id.photoList)
+        val name = itemView.findViewById<TextView>(R.id.nameList)
 
         init {
-            image.setOnClickListener {
+            itemView.setOnClickListener {
                 val song = allSongsList[absoluteAdapterPosition]
                 listner.viewBook(song, allSongsList, absoluteAdapterPosition)
             }
@@ -28,14 +30,15 @@ class HomeAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.song_home_item, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.song_list_item, parent, false)
         return ViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val book = allSongsList[position]
-        val photo = book.coverLink
+        val song = allSongsList[position]
+        val photo = song.coverLink
         val imageView = holder.image
+        holder.name.text = song.name
         Glide.with(context).load(photo).into(imageView)
 
 

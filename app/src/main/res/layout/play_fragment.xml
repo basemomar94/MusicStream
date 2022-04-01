@@ -35,7 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="Adele"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/playTitle"

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.PlayFragmentBinding
 import com.bassem.musicstream.entities.Song
@@ -17,8 +18,8 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 
 class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
-    var _binding: PlayFragmentBinding? = null
-    val binding get() = _binding
+    private var _binding: PlayFragmentBinding? = null
+    private val binding get() = _binding
     private var song: Song? = null
     private var allSongs: ArrayList<Song>? = null
     private var isPlaying = false
@@ -93,7 +94,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
                 }
                 playOrpause(true)
 
-                Log.d("Check", exoPlayer!!.isPlaying.toString())
+
 
 
             }
@@ -114,6 +115,14 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
                 }
                 playOrpause(true)
 
+
+            }
+            playAuthor.setOnClickListener {
+                println("autho")
+                val bundle = Bundle()
+                bundle.putString("singer", song?.singer)
+                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                navController.navigate(R.id.action_songFragment_to_singerFragment, bundle)
 
             }
 
@@ -139,6 +148,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     private fun updateUi(song: Song) {
         binding?.apply {
             playTitle.text = song.name
+            playAuthor.text = song.singer
         }
         val cover = binding?.playImage
         val image = song.coverLink

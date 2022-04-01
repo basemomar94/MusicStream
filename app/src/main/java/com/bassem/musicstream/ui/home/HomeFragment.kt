@@ -50,9 +50,9 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
 
 
-        viewModel?.getBooks()
-        viewModel?.getNovels()
-        viewModel?.getChildren()
+        viewModel?.getfolkSongs()
+        viewModel?.getpopSongs()
+        viewModel?.getrockSongs()
 
         //Observers
         viewModel?.booksList?.observe(viewLifecycleOwner) {
@@ -97,7 +97,6 @@ class HomeFragment : Fragment(R.layout.allsongs_fragment), HomeAdapter.HomeInter
 
     override fun viewBook(song: Song, list: MutableList<Song>, position: Int) {
         val bundle = Bundle()
-        Log.d("adapter", position.toString())
         bundle.putSerializable("book", song)
         bundle.putInt("current", position)
         bundle.putParcelableArrayList("list", list as ArrayList<out Parcelable>)

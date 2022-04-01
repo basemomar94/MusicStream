@@ -13,10 +13,10 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     var childrenList = MutableLiveData<MutableList<Song>>()
 
 
-    fun getBooks() {
+    fun getfolkSongs() {
         val firestoreList: MutableList<Song> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("books")?.whereEqualTo("category", "book")?.get()?.addOnCompleteListener {
+        db?.collection("songs")?.whereEqualTo("category", "folk")?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 for (dc in it.result) {
                     val song = dc.toObject(Song::class.java)
@@ -30,10 +30,10 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun getNovels() {
+    fun getpopSongs() {
         val firestoreList: MutableList<Song> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("books")?.whereEqualTo("category", "novel")?.get()?.addOnCompleteListener {
+        db?.collection("songs")?.whereEqualTo("category", "pop")?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 for (dc in it.result) {
                     val song = dc.toObject(Song::class.java)
@@ -47,10 +47,10 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun getChildren() {
+    fun getrockSongs() {
         val firestoreList: MutableList<Song> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("books")?.whereEqualTo("category", "children")?.get()
+        db?.collection("songs")?.whereEqualTo("category", "rock")?.get()
             ?.addOnCompleteListener {
                 if (it.isSuccessful) {
                     for (dc in it.result) {
