@@ -47,5 +47,9 @@
     <fragment
         android:id="@+id/singerFragment"
         android:name="com.bassem.musicstream.ui.singer.SingerFragment"
-        android:label="SingerFragment" />
+        android:label="SingerFragment" >
+        <action
+            android:id="@+id/action_singerFragment_to_songFragment"
+            app:destination="@id/songFragment" />
+    </fragment>
 </navigation>

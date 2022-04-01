@@ -3,6 +3,7 @@ package com.bassem.musicstream.ui.singer
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.bassem.musicstream.entities.Singer
 import com.bassem.musicstream.entities.Song
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class SingerViewModel(app: Application) : AndroidViewModel(app) {
     var db: FirebaseFirestore = FirebaseFirestore.getInstance()
     var songsList = MutableLiveData<MutableList<Song>>()
+    var singerLive = MutableLiveData<Singer>()
 
     fun getSingerSongs(singer: String) {
         var songs: MutableList<Song> = mutableListOf()
@@ -23,6 +25,19 @@ class SingerViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 songsList.postValue(songs)
             }
+        }
+    }
+
+    fun getSingerinfo(singer: String) {
+        db.collection("singers").whereEqualTo("name", singer).get().addOnCompleteListener {
+            val singerinfo = it.result.toObjects(Singer::class.java)
+            if (singerinfo.isNotEmpty()){
+                singerLive.postValue(singerinfo[0])
+            } else {
+                println(singerinfo)
+            }
+
+
         }
     }
 }
