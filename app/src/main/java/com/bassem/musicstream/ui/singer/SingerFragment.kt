@@ -18,6 +18,7 @@ import com.bassem.musicstream.entities.Singer
 import com.bassem.musicstream.entities.Song
 import com.bumptech.glide.Glide
 import java.util.ArrayList
+import kotlin.math.sin
 
 class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.HomeInterface {
     var binding: SingerFragmentBinding? = null
@@ -51,6 +52,7 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
         }
         viewModel.singerLive.observe(viewLifecycleOwner) {
             updateSingerInfo(it)
+             endLoading()
         }
     }
 
@@ -76,8 +78,17 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
     }
 
     private fun updateSingerInfo(singer: Singer) {
+        println(singer.name)
         binding?.singerName?.text = singer.name
         val imageLink = singer.photo
         Glide.with(requireView()).load(imageLink).into(binding?.singerPhoto!!)
+    }
+
+    private fun endLoading() {
+        binding?.apply {
+            shimmerLayout.visibility = View.GONE
+            singerLayout.visibility = View.VISIBLE
+
+        }
     }
 }
