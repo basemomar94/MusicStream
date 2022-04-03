@@ -1,5 +1,7 @@
 package com.bassem.musicstream.ui.play
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -16,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import java.lang.Exception
 
 class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     private var _binding: PlayFragmentBinding? = null
@@ -25,6 +28,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     private var isPlaying = false
     private var current = 0
     private var issPlaying = MutableLiveData<Boolean>()
+    private var share: dataShareInterface? = null
 
 
     private var exoPlayer: ExoPlayer? = null
@@ -45,6 +49,17 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     ): View? {
         _binding = PlayFragmentBinding.inflate(inflater, container, false)
         return binding?.root
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val activity: Activity = context as Activity
+        try {
+            share = activity as dataShareInterface
+        } catch (e: Exception) {
+            println(e.message)
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -95,8 +110,6 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
                 playOrpause(true)
 
 
-
-
             }
 
             previousSong.setOnClickListener {
@@ -121,7 +134,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
                 println("autho")
                 val bundle = Bundle()
                 bundle.putString("singer", song?.singer)
-                val navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                val navController =
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                 navController.navigate(R.id.action_songFragment_to_singerFragment, bundle)
 
             }
@@ -153,6 +167,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         val cover = binding?.playImage
         val image = song.coverLink
         Glide.with(requireContext()).load(image).into(cover!!)
+        share?.getSonginfo(song.name, song.singer, image)
+
 
     }
 
@@ -194,5 +210,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         }
     }
 
+    interface dataShareInterface {
+        fun getSonginfo(title: String, singer: String, photo: String)
+    }
 
 }
