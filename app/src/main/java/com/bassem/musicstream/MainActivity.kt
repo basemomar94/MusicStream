@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.bassem.musicstream.databinding.ActivityMainBinding
 import com.bassem.musicstream.service.MusicService
 import com.bassem.musicstream.ui.play.PlayFragment
@@ -12,6 +14,8 @@ import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.jar.Manifest
 import javax.security.auth.callback.Callback
@@ -20,6 +24,7 @@ class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShar
     var binding: ActivityMainBinding? = null
     var exoPlayer: ExoPlayer? = null
     var isPlaying: Callback? = null
+    lateinit var bottomNavigationView: BottomNavigationView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -27,7 +32,11 @@ class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShar
 
         exoPlayer = ExoPlayer.Builder(this).build()
         exoPlayer?.addListener(this)
-
+        bottomNavigationView = findViewById(R.id.bottomAppBar)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        bottomNavigationView.setupWithNavController(navController)
         /*  Intent(this,MusicService::class.java).also {
               startService(it)
           }*/

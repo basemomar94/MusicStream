@@ -11,7 +11,7 @@
         android:label="SignupFragment" >
         <action
             android:id="@+id/action_signupFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/Home" />
         <action
             android:id="@+id/action_signupFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -26,15 +26,17 @@
             app:destination="@id/signupFragment" />
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/Home" />
     </fragment>
     <fragment
-        android:id="@+id/homeFragment"
+        android:id="@+id/Home"
         android:name="com.bassem.musicstream.ui.home.HomeFragment"
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_songFragment"
-            app:destination="@id/songFragment" />
+            app:destination="@id/songFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/songFragment"
@@ -42,7 +44,8 @@
         android:label="SongFragment" >
         <action
             android:id="@+id/action_songFragment_to_singerFragment"
-            app:destination="@id/singerFragment" />
+            app:destination="@id/singerFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
     <fragment
         android:id="@+id/singerFragment"
@@ -50,6 +53,12 @@
         android:label="SingerFragment" >
         <action
             android:id="@+id/action_singerFragment_to_songFragment"
-            app:destination="@id/songFragment" />
+            app:destination="@id/songFragment"
+            app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
+    <fragment
+        android:id="@+id/Account"
+        android:name="com.bassem.musicstream.ui.account.AccountFragment"
+        android:label="acount_fragment"
+        tools:layout="@layout/acount_fragment" />
 </navigation>
