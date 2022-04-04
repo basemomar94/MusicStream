@@ -6,7 +6,7 @@
         <entry key="..\:/MusicStream/app/src/main/res/drawable-v24/bttuon.xml" value="0.289" />
         <entry key="..\:/MusicStream/app/src/main/res/drawable/gradientbackground.xml" value="0.183" />
         <entry key="..\:/MusicStream/app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.183" />
-        <entry key="..\:/MusicStream/app/src/main/res/layout/acount_fragment.xml" value="0.14709569577935647" />
+        <entry key="..\:/MusicStream/app/src/main/res/layout/acount_fragment.xml" value="0.22" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/activity_main.xml" value="0.18" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/allsongs_fragment.xml" value="0.33" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/book_item.xml" value="0.33" />
@@ -14,10 +14,10 @@
         <entry key="..\:/MusicStream/app/src/main/res/layout/play_fragment.xml" value="0.14" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/playsong_fragment.xml" value="0.14" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/signup_fragment.xml" value="0.3" />
-        <entry key="..\:/MusicStream/app/src/main/res/layout/singer_fragment.xml" value="0.33" />
+        <entry key="..\:/MusicStream/app/src/main/res/layout/singer_fragment.xml" value="0.25" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/singer_shimmer.xml" value="0.14709569577935647" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/song_item.xml" value="0.3038949275362319" />
-        <entry key="..\:/MusicStream/app/src/main/res/layout/song_list_item.xml" value="0.33" />
+        <entry key="..\:/MusicStream/app/src/main/res/layout/song_list_item.xml" value="0.25" />
         <entry key="..\:/MusicStream/app/src/main/res/layout/song_list_shimmer.xml" value="0.3009833262077811" />
         <entry key="..\:/MusicStream/app/src/main/res/menu/bottom_menue.xml" value="0.36666666666666664" />
       </map>

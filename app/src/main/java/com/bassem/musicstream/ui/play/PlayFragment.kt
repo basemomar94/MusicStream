@@ -83,7 +83,16 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         //Listeners
         binding?.apply {
             playSong.setOnClickListener {
-                exoPlayer?.play()
+                println("exo $issPlaying")
+                if (exoPlayer!!.isPlaying) {
+                    exoPlayer?.stop()
+                    println("stopped")
+                    exoPlayer?.play()
+                } else {
+                    println("direct play")
+
+                    exoPlayer?.play()
+                }
                 currentPlayBack.postValue(exoPlayer?.bufferedPosition)
 
 
@@ -177,7 +186,17 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         val media: MediaItem = MediaItem.fromUri(currentSong.audioLink)
         exoPlayer?.addMediaItem(media)
         exoPlayer?.prepare()
-        exoPlayer?.play()
+        println("exo ${exoPlayer?.isPlaying}")
+
+        if (exoPlayer!!.isPlaying){
+            println("stop")
+            exoPlayer?.stop()
+            exoPlayer?.play()
+        } else {
+            exoPlayer?.play()
+            println("direct")
+
+        }
         issPlaying.postValue(exoPlayer?.isPlaying)
     }
 

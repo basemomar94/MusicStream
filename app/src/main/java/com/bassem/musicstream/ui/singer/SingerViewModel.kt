@@ -40,4 +40,5 @@ class SingerViewModel(app: Application) : AndroidViewModel(app) {
 
         }
     }
+
 }

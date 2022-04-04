@@ -50,6 +50,7 @@ class SongsListAdapter(
 
     fun addList(list: MutableList<Song>) {
         allSongsList = list
+        notifyDataSetChanged()
     }
 
     interface HomeInterface {

@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -24,6 +25,8 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
     var binding: SingerFragmentBinding? = null
     var singer: String? = null
     var songsRv: RecyclerView? = null
+    var songsAdapter: SongsListAdapter? = null
+    var allsongs: MutableList<Song>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +52,28 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
         //Observers
         viewModel.songsList.observe(viewLifecycleOwner) {
             initRv(it)
+            allsongs = it
         }
         viewModel.singerLive.observe(viewLifecycleOwner) {
             updateSingerInfo(it)
-             endLoading()
+            endLoading()
         }
+
+        //Listeners
+        binding?.search?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                println(p0)
+                if (p0 != null) {
+                    search(p0)
+                }
+                return true
+            }
+        })
+
     }
 
     fun initRv(list: MutableList<Song>) {
@@ -90,5 +110,15 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
             singerLayout.visibility = View.VISIBLE
 
         }
+    }
+
+  private  fun search(input: String) {
+        val searchList: MutableList<Song> = mutableListOf()
+        allsongs?.forEach {
+            if (it.name.contains(input))
+                searchList.add(it)
+        }
+      println(searchList)
+        songsAdapter?.addList(searchList)
     }
 }

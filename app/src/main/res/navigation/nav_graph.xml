@@ -60,5 +60,5 @@
         android:id="@+id/Account"
         android:name="com.bassem.musicstream.ui.account.AccountFragment"
         android:label="acount_fragment"
-        tools:layout="@layout/acount_fragment" />
+        tools:layout="@layout/account_fragment" />
 </navigation>
