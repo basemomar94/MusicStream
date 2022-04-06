@@ -1,23 +1,19 @@
 package com.bassem.musicstream
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bassem.musicstream.databinding.ActivityMainBinding
-import com.bassem.musicstream.service.MusicService
+import com.bassem.musicstream.entities.StreamPlayer
 import com.bassem.musicstream.ui.play.PlayFragment
 import com.bassem.musicstream.ui.play.PlayViewModel
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import pub.devrel.easypermissions.EasyPermissions
-import java.util.jar.Manifest
 import javax.security.auth.callback.Callback
 
 class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShareInterface {
@@ -42,21 +38,24 @@ class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShar
           }*/
         val viewModel = ViewModelProvider(this)[PlayViewModel::class.java]
 
+        binding?.pauseSong2?.setOnClickListener {
+            StreamPlayer.getMusic().pause()
 
-    }
+        }
 
-    override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
-        super.onPlaybackParametersChanged(playbackParameters)
-    }
+        binding?.playSong?.setOnClickListener {
+            StreamPlayer.getMusic().play()
+        }
 
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
+
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
-        println("$isPlaying Activitiy")
+        playOrpause(StreamPlayer.getMusic().isPlaying)
+        println("${StreamPlayer.getMusic().isPlaying} Activity")
     }
+
 
     override fun getSonginfo(title: String, singer: String, photo: String) {
         binding?.songTitle?.text = title
@@ -65,6 +64,22 @@ class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShar
         if (imag != null) {
             Glide.with(this).load(photo).into(imag)
         }
+    }
+
+    private fun playOrpause(play: Boolean) {
+
+        if (play) {
+            binding?.apply {
+                playSong.visibility = View.GONE
+                pauseSong2.visibility = View.VISIBLE
+            }
+        } else {
+            binding?.apply {
+                playSong.visibility = View.VISIBLE
+                pauseSong2.visibility = View.GONE
+            }
+        }
+
     }
 
 

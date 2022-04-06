@@ -81,6 +81,14 @@
                     app:srcCompat="@drawable/play" />
 
                 <ImageView
+                    android:id="@+id/pauseSong2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/pause" />
+
+                <ImageView
                     android:id="@+id/nextSong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

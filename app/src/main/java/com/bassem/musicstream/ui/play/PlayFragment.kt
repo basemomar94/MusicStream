@@ -14,6 +14,7 @@ import androidx.navigation.Navigation
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.PlayFragmentBinding
 import com.bassem.musicstream.entities.Song
+import com.bassem.musicstream.entities.StreamPlayer
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -30,8 +31,6 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     private var issPlaying = MutableLiveData<Boolean>()
     private var share: dataShareInterface? = null
 
-
-    private var exoPlayer: ExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,10 +63,13 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         allSongs?.get(current)?.let {
             updateUi(it)
             initPlayer(it)
         }
+
         //Observers
 
         var currentPlayBack = MutableLiveData<Long>()
@@ -84,25 +86,17 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         binding?.apply {
             playSong.setOnClickListener {
                 println("exo $issPlaying")
-                if (exoPlayer!!.isPlaying) {
-                    exoPlayer?.stop()
-                    println("stopped")
-                    exoPlayer?.play()
-                } else {
-                    println("direct play")
-
-                    exoPlayer?.play()
-                }
-                currentPlayBack.postValue(exoPlayer?.bufferedPosition)
+               initPlayer(song!!)
+               // currentPlayBack.postValue(exoPlayer?.bufferedPosition)
 
 
             }
             pauseSong.setOnClickListener {
-                exoPlayer?.pause()
+                StreamPlayer.getMusic()?.pause()
             }
 
             nextSong.setOnClickListener {
-                exoPlayer?.stop()
+                StreamPlayer.getMusic()?.stop()
                 if (current < allSongs!!.size - 1) {
                     current++
                     val song = allSongs?.get(current)
@@ -122,7 +116,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
             }
 
             previousSong.setOnClickListener {
-                exoPlayer?.stop()
+                StreamPlayer.getMusic()?.stop()
                 if (current < allSongs!!.size - 1) {
                     current--
                     val song = allSongs?.get(current)
@@ -151,7 +145,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
 
         }
-        exoPlayer?.addListener(this)
+        StreamPlayer.getMusic().addListener(this)
 
 
     }
@@ -182,22 +176,11 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     }
 
     private fun initPlayer(currentSong: Song) {
-        exoPlayer = ExoPlayer.Builder(requireContext()).build()
         val media: MediaItem = MediaItem.fromUri(currentSong.audioLink)
-        exoPlayer?.addMediaItem(media)
-        exoPlayer?.prepare()
-        println("exo ${exoPlayer?.isPlaying}")
-
-        if (exoPlayer!!.isPlaying){
-            println("stop")
-            exoPlayer?.stop()
-            exoPlayer?.play()
-        } else {
-            exoPlayer?.play()
-            println("direct")
-
-        }
-        issPlaying.postValue(exoPlayer?.isPlaying)
+        StreamPlayer.getMusic().addMediaItem(media)
+        StreamPlayer.getMusic().prepare()
+        StreamPlayer.getMusic().play()
+        issPlaying.postValue(StreamPlayer.getMusic().isPlaying)
     }
 
     private fun playOrpause(play: Boolean) {
@@ -218,9 +201,9 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
     private fun updatePlayback() {
         val handler = Handler()
-        while (exoPlayer!!.isPlaying) {
+        while (StreamPlayer.getMusic()!!.isPlaying) {
             handler.postDelayed(Runnable {
-                val playbackpostition = exoPlayer?.currentPosition
+                val playbackpostition = StreamPlayer.getMusic()?.currentPosition
                 binding?.currentBuffer?.text = playbackpostition.toString()
                 handler.postDelayed(Runnable {
 
@@ -231,6 +214,14 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
     interface dataShareInterface {
         fun getSonginfo(title: String, singer: String, photo: String)
+    }
+
+    private fun stopExo() {
+        StreamPlayer.getMusic().stop()
+        StreamPlayer.getMusic().seekTo(0L)
+        StreamPlayer.getMusic().prepare()
+        StreamPlayer.getMusic().play()
+
     }
 
 }

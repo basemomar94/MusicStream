@@ -18,10 +18,11 @@ import com.bassem.musicstream.databinding.SingerFragmentBinding
 import com.bassem.musicstream.entities.Singer
 import com.bassem.musicstream.entities.Song
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.Player
 import java.util.ArrayList
 import kotlin.math.sin
 
-class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.HomeInterface {
+class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.HomeInterface, Player.Listener {
     var binding: SingerFragmentBinding? = null
     var singer: String? = null
     var songsRv: RecyclerView? = null
@@ -51,8 +52,9 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
 
         //Observers
         viewModel.songsList.observe(viewLifecycleOwner) {
-            initRv(it)
             allsongs = it
+            allsongs?.let { it1 -> initRv(it1) }
+
         }
         viewModel.singerLive.observe(viewLifecycleOwner) {
             updateSingerInfo(it)
@@ -112,13 +114,18 @@ class SingerFragment : Fragment(R.layout.singer_fragment), SongsListAdapter.Home
         }
     }
 
+
+
   private  fun search(input: String) {
         val searchList: MutableList<Song> = mutableListOf()
-        allsongs?.forEach {
+      allsongs?.forEach {
             if (it.name.contains(input))
                 searchList.add(it)
         }
       println(searchList)
-        songsAdapter?.addList(searchList)
+       songsAdapter?.addList(searchList)
+      songsAdapter?.notifyDataSetChanged()
     }
+
+
 }
