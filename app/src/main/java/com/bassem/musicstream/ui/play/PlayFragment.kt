@@ -40,7 +40,6 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         song = args?.get("book") as Song
         allSongs = args.get("list") as ArrayList<Song>
         current = args.getInt("current")
-        println("$current ////")
     }
 
     override fun onCreateView(
@@ -84,12 +83,13 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
             println(it)
         }
 
+        val c = StreamPlayer.getMusic().contentDuration.toDouble()
+        println("$c current position")
+
         //Listeners
         binding?.apply {
             playSong.setOnClickListener {
-                println("exo $issPlaying")
-               initPlayer(song!!)
-               // currentPlayBack.postValue(exoPlayer?.bufferedPosition)
+                initPlayer(song!!)
 
 
             }
@@ -163,22 +163,19 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         })
 
 
-
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
         Log.d("IsPlaying", isPlaying.toString())
         playOrpause(isPlaying)
+        updateDuration()
     }
 
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
-        println(playbackState)
+        println("$playbackState  current postition")
     }
-
-
-
 
 
     private fun updateUi(song: Song) {
@@ -200,6 +197,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         StreamPlayer.getMusic().prepare()
         StreamPlayer.getMusic().play()
         issPlaying.postValue(StreamPlayer.getMusic().isPlaying)
+
+
     }
 
     private fun playOrpause(play: Boolean) {
@@ -240,6 +239,14 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         StreamPlayer.getMusic().seekTo(0L)
         StreamPlayer.getMusic().prepare()
         StreamPlayer.getMusic().play()
+
+    }
+
+    private fun updateDuration() {
+        val timeinMill = StreamPlayer.getMusic().duration
+        val minutes = timeinMill / 1000 / 60
+        val seconds = timeinMill /  1000 % 60
+        "${minutes.toInt()}:${seconds.toInt()}".also { binding?.totalBuffer?.text = it }
 
     }
 
