@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShar
         binding?.playSong?.setOnClickListener {
             StreamPlayer.getMusic().play()
         }
+        StreamPlayer.getMusic().addListener(this)
 
 
     }
