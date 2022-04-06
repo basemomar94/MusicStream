@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.Navigation
@@ -18,6 +19,7 @@ import com.bassem.musicstream.entities.StreamPlayer
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import java.lang.Exception
 
@@ -92,11 +94,11 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
             }
             pauseSong.setOnClickListener {
-                StreamPlayer.getMusic()?.pause()
+                StreamPlayer.getMusic().pause()
             }
 
             nextSong.setOnClickListener {
-                StreamPlayer.getMusic()?.stop()
+                StreamPlayer.getMusic().stop()
                 if (current < allSongs!!.size - 1) {
                     current++
                     val song = allSongs?.get(current)
@@ -116,7 +118,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
             }
 
             previousSong.setOnClickListener {
-                StreamPlayer.getMusic()?.stop()
+                StreamPlayer.getMusic().stop()
                 if (current < allSongs!!.size - 1) {
                     current--
                     val song = allSongs?.get(current)
@@ -146,6 +148,20 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
         }
         StreamPlayer.getMusic().addListener(this)
+        binding?.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, seek: Int, p2: Boolean) {
+                println("$seek  SEEK")
+                StreamPlayer.getMusic().seekTo(10L)
+
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+            }
+        })
+
 
 
     }
@@ -156,10 +172,13 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         playOrpause(isPlaying)
     }
 
-    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-        super.onPlayWhenReadyChanged(playWhenReady, reason)
-        Log.d("isPlaying", playWhenReady.toString())
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        println(playbackState)
     }
+
+
+
 
 
     private fun updateUi(song: Song) {
