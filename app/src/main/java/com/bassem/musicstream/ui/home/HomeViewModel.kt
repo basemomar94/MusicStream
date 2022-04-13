@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.bassem.musicstream.entities.Song
+import com.bassem.musicstream.utilities.Constants.CATEGORY
+import com.bassem.musicstream.utilities.Constants.SONGS
 import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeViewModel(app: Application) : AndroidViewModel(app) {
@@ -16,7 +18,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun getfolkSongs() {
         val firestoreList: MutableList<Song> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("songs")?.whereEqualTo("category", "folk")?.get()?.addOnCompleteListener {
+        db?.collection(SONGS)?.whereEqualTo("category", "folk")?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 for (dc in it.result) {
                     val song = dc.toObject(Song::class.java)
@@ -33,7 +35,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun getpopSongs() {
         val firestoreList: MutableList<Song> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("songs")?.whereEqualTo("category", "pop")?.get()?.addOnCompleteListener {
+        db?.collection(SONGS)?.whereEqualTo(CATEGORY, "pop")?.get()?.addOnCompleteListener {
             if (it.isSuccessful) {
                 for (dc in it.result) {
                     val song = dc.toObject(Song::class.java)
@@ -50,7 +52,7 @@ class HomeViewModel(app: Application) : AndroidViewModel(app) {
     fun getrockSongs() {
         val firestoreList: MutableList<Song> = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db?.collection("songs")?.whereEqualTo("category", "rock")?.get()
+        db?.collection(SONGS)?.whereEqualTo(CATEGORY, "rock")?.get()
             ?.addOnCompleteListener {
                 if (it.isSuccessful) {
                     for (dc in it.result) {

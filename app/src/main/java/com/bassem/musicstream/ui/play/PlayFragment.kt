@@ -9,29 +9,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.bassem.musicstream.R
 import com.bassem.musicstream.databinding.PlayFragmentBinding
 import com.bassem.musicstream.entities.Song
 import com.bassem.musicstream.entities.StreamPlayer
+import com.bassem.musicstream.service.MusicService
 import com.bumptech.glide.Glide
-import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.source.MediaSource
 import java.lang.Exception
+import kotlin.concurrent.fixedRateTimer
 
 class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     private var _binding: PlayFragmentBinding? = null
     private val binding get() = _binding
     private var song: Song? = null
     private var allSongs: ArrayList<Song>? = null
-    private var isPlaying = false
     private var current = 0
-    private var issPlaying = MutableLiveData<Boolean>()
-    private var share: dataShareInterface? = null
+    var viewModel: PlayViewModel? = null
+    private var share: DataShareInterface? = null
+    private var handler = Handler()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +59,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         super.onAttach(context)
         val activity: Activity = context as Activity
         try {
-            share = activity as dataShareInterface
+            share = activity as DataShareInterface
         } catch (e: Exception) {
             println(e.message)
         }
@@ -64,33 +68,23 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this)[PlayViewModel::class.java]
+
+
 
 
         allSongs?.get(current)?.let {
             updateUi(it)
-            initPlayer(it)
+            viewModel!!.initPlayer(it)
         }
 
         //Observers
 
-        var currentPlayBack = MutableLiveData<Long>()
-        currentPlayBack.observe(viewLifecycleOwner) {
-            println(it.toString())
-
-        }
-        issPlaying.observe(viewLifecycleOwner) {
-            playOrpause(it)
-            println(it)
-        }
-
-        val c = StreamPlayer.getMusic().contentDuration.toDouble()
-        println("$c current position")
 
         //Listeners
         binding?.apply {
             playSong.setOnClickListener {
-                initPlayer(song!!)
-
+                StreamPlayer.getMusic().play()
 
             }
             pauseSong.setOnClickListener {
@@ -103,16 +97,14 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
                     current++
                     val song = allSongs?.get(current)
                     updateUi(song!!)
-                    initPlayer(song)
 
 
                 } else {
                     current = 0
                     val song = allSongs?.get(current)
                     updateUi(song!!)
-                    initPlayer(song)
                 }
-                playOrpause(true)
+                playPause(true)
 
 
             }
@@ -123,20 +115,17 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
                     current--
                     val song = allSongs?.get(current)
                     updateUi(song!!)
-                    initPlayer(song)
 
                 } else {
                     current = 0
                     val song = allSongs?.get(current)
                     updateUi(song!!)
-                    initPlayer(song)
                 }
-                playOrpause(true)
+                playPause(true)
 
 
             }
             playAuthor.setOnClickListener {
-                println("autho")
                 val bundle = Bundle()
                 bundle.putString("singer", song?.singer)
                 val navController =
@@ -147,34 +136,29 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
 
         }
+
         StreamPlayer.getMusic().addListener(this)
-        binding?.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, seek: Int, p2: Boolean) {
-                println("$seek  SEEK")
-                StreamPlayer.getMusic().seekTo(10L)
-
-            }
-
-            override fun onStartTrackingTouch(p0: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(p0: SeekBar?) {
-            }
-        })
 
 
+
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        println(error.message)
     }
 
     override fun onIsPlayingChanged(isPlaying: Boolean) {
         super.onIsPlayingChanged(isPlaying)
-        Log.d("IsPlaying", isPlaying.toString())
-        playOrpause(isPlaying)
-        updateDuration()
-    }
+        val total = viewModel?.updateDuration()
+        binding?.totalBuffer?.text = total
 
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        println("$playbackState  current postition")
+        val test = StreamPlayer.getMusic().mediaMetadata.displayTitle
+        if (isPlaying) {
+         //   watchProgress()
+
+        }
+        Log.d("IsPlaying", test.toString())
     }
 
 
@@ -191,17 +175,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
     }
 
-    private fun initPlayer(currentSong: Song) {
-        val media: MediaItem = MediaItem.fromUri(currentSong.audioLink)
-        StreamPlayer.getMusic().addMediaItem(media)
-        StreamPlayer.getMusic().prepare()
-        StreamPlayer.getMusic().play()
-        issPlaying.postValue(StreamPlayer.getMusic().isPlaying)
 
-
-    }
-
-    private fun playOrpause(play: Boolean) {
+    private fun playPause(play: Boolean) {
 
         if (play) {
             binding?.apply {
@@ -217,37 +192,30 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
 
     }
 
-    private fun updatePlayback() {
-        val handler = Handler()
-        while (StreamPlayer.getMusic()!!.isPlaying) {
-            handler.postDelayed(Runnable {
-                val playbackpostition = StreamPlayer.getMusic()?.currentPosition
-                binding?.currentBuffer?.text = playbackpostition.toString()
-                handler.postDelayed(Runnable {
-
-                }, 1000)
-            }, 1000)
+    private fun watchProgress() {
+        fixedRateTimer("timer", false, 0, 1000) {
+            this@PlayFragment.requireActivity().runOnUiThread(Runnable {
+                var current = StreamPlayer.getMusic().currentPosition
+                updateProgressUi(current)
+            })
         }
     }
 
-    interface dataShareInterface {
+    private fun updateProgressUi(current: Long) {
+        val minutes = current / 1000 / 60
+        val seconds = current / 1000 % 60
+        val currentPosition = "${minutes.toInt()}:${seconds.toInt()}"
+        binding?.currentBuffer?.text = currentPosition
+      //  binding?.seekBar?.max = StreamPlayer.getMusic().duration.toInt()
+       // binding?.seekBar?.progress = current.toInt()
+
+
+    }
+
+
+    interface DataShareInterface {
         fun getSonginfo(title: String, singer: String, photo: String)
     }
 
-    private fun stopExo() {
-        StreamPlayer.getMusic().stop()
-        StreamPlayer.getMusic().seekTo(0L)
-        StreamPlayer.getMusic().prepare()
-        StreamPlayer.getMusic().play()
-
-    }
-
-    private fun updateDuration() {
-        val timeinMill = StreamPlayer.getMusic().duration
-        val minutes = timeinMill / 1000 / 60
-        val seconds = timeinMill /  1000 % 60
-        "${minutes.toInt()}:${seconds.toInt()}".also { binding?.totalBuffer?.text = it }
-
-    }
 
 }

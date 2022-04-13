@@ -16,7 +16,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.security.auth.callback.Callback
 
-class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.dataShareInterface {
+class MainActivity : AppCompatActivity(), Player.Listener, PlayFragment.DataShareInterface {
     var binding: ActivityMainBinding? = null
     var exoPlayer: ExoPlayer? = null
     var isPlaying: Callback? = null
