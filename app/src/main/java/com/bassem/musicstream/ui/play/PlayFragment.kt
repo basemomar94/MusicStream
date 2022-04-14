@@ -44,6 +44,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         song = args?.get("book") as Song
         allSongs = args.get("list") as ArrayList<Song>
         current = args.getInt("current")
+        val mediaItems = allSongs?.map { it.audioLink }
+
     }
 
     override fun onCreateView(
@@ -64,6 +66,10 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
             println(e.message)
         }
 
+    }
+
+    override fun onDetach() {
+        super.onDetach()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,8 +100,12 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
             nextSong.setOnClickListener {
                 StreamPlayer.getMusic().stop()
                 if (current < allSongs!!.size - 1) {
+                    StreamPlayer.getMusic().stop()
+                    //   StreamPlayer.getMusic().seekToNext()
+
                     current++
                     val song = allSongs?.get(current)
+                    viewModel?.initPlayer(song!!)
                     updateUi(song!!)
 
 
@@ -169,8 +179,6 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         val total = viewModel?.updateDuration()
         binding?.totalBuffer?.text = total
         playPause(isPlaying)
-
-        val test = StreamPlayer.getMusic().mediaMetadata.displayTitle
         if (isPlaying) {
             watchProgress()
 
@@ -220,7 +228,13 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
     private fun updateProgressUi(current: Long) {
         val minutes = current / 1000 / 60
         val seconds = current / 1000 % 60
-        val currentPosition = "${minutes.toInt()}:${seconds.toInt()}"
+        var currentPosition: String = if (seconds < 10) {
+            "${minutes.toInt()}:0${seconds.toInt()}"
+        } else {
+            "${minutes.toInt()}:${seconds.toInt()}"
+
+        }
+        // val currentPosition = "${minutes.toInt()}:${seconds.toInt()}"
         binding?.currentBuffer?.text = currentPosition
         binding?.seekBar?.max = StreamPlayer.getMusic().duration.toInt()
         binding?.seekBar?.progress = current.toInt()

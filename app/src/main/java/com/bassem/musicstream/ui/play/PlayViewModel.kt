@@ -33,6 +33,11 @@ class PlayViewModel(app: Application) : AndroidViewModel(app) {
         val timeinMill = StreamPlayer.getMusic().duration
         val minutes = timeinMill / 1000 / 60
         val seconds = timeinMill / 1000 % 60
-        return "${minutes.toInt()}:${seconds.toInt()}"
+        return if (seconds < 10) {
+            "${minutes.toInt()}:0${seconds.toInt()}"
+        } else {
+            "${minutes.toInt()}:${seconds.toInt()}"
+
+        }
     }
 }
