@@ -152,10 +152,11 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         super.onIsPlayingChanged(isPlaying)
         val total = viewModel?.updateDuration()
         binding?.totalBuffer?.text = total
+        playPause(isPlaying)
 
         val test = StreamPlayer.getMusic().mediaMetadata.displayTitle
         if (isPlaying) {
-         //   watchProgress()
+            watchProgress()
 
         }
         Log.d("IsPlaying", test.toString())
@@ -196,7 +197,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         fixedRateTimer("timer", false, 0, 1000) {
             this@PlayFragment.requireActivity().runOnUiThread(Runnable {
                 var current = StreamPlayer.getMusic().currentPosition
-                updateProgressUi(current)
+                 updateProgressUi(current)
             })
         }
     }
