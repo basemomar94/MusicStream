@@ -138,7 +138,23 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         }
 
         StreamPlayer.getMusic().addListener(this)
+        binding?.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, seek: Int, p2: Boolean) {
 
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {
+                StreamPlayer.getMusic().pause()
+
+            }
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {
+                StreamPlayer.getMusic().seekTo(p0?.progress!!.toLong())
+                StreamPlayer.getMusic().play()
+
+
+            }
+        })
 
 
     }
@@ -159,7 +175,6 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
             watchProgress()
 
         }
-        Log.d("IsPlaying", test.toString())
     }
 
 
@@ -197,7 +212,7 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         fixedRateTimer("timer", false, 0, 1000) {
             this@PlayFragment.requireActivity().runOnUiThread(Runnable {
                 var current = StreamPlayer.getMusic().currentPosition
-                 updateProgressUi(current)
+                updateProgressUi(current)
             })
         }
     }
@@ -207,8 +222,8 @@ class PlayFragment : Fragment(R.layout.play_fragment), Player.Listener {
         val seconds = current / 1000 % 60
         val currentPosition = "${minutes.toInt()}:${seconds.toInt()}"
         binding?.currentBuffer?.text = currentPosition
-      //  binding?.seekBar?.max = StreamPlayer.getMusic().duration.toInt()
-       // binding?.seekBar?.progress = current.toInt()
+        binding?.seekBar?.max = StreamPlayer.getMusic().duration.toInt()
+        binding?.seekBar?.progress = current.toInt()
 
 
     }
